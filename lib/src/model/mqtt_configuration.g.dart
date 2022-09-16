@@ -29,6 +29,7 @@ MqttConfiguration _$MqttConfigurationFromJson(Map<String, dynamic> json) =>
           ? null
           : WorkManagerPingSenderConfig.fromJson(
               json['pingSender'] as Map<String, dynamic>),
+      useInterceptor: json['useInterceptor'] as bool? ?? false,
       experimentConfig: json['experimentConfig'] == null
           ? null
           : ExperimentConfig.fromJson(
@@ -43,5 +44,6 @@ Map<String, dynamic> _$MqttConfigurationToJson(MqttConfiguration instance) =>
       'unsubscriptionRetryPolicy': instance.unsubscriptionRetryPolicy?.toJson(),
       'wakeLockTimeout': instance.wakeLockTimeout,
       'pingSender': instance.pingSender?.toJson(),
+      'useInterceptor': instance.useInterceptor,
       'experimentConfig': instance.experimentConfig?.toJson(),
     };

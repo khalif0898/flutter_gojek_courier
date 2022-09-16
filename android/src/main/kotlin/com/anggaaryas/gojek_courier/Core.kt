@@ -44,7 +44,6 @@ class GojekCourierCore(val receiveSink: EventChannel.EventSink, val logger: List
 
     fun disconnect(){
         mqttClient.disconnect()
-        disposable.dispose()
     }
 
     fun subscribe(topic: String, qos: QoS){
@@ -77,14 +76,31 @@ class GojekCourierCore(val receiveSink: EventChannel.EventSink, val logger: List
         }
     }
 
+    fun sendByte(topic: String, message: ByteArray, qos: QoS){
+        when(qos){
+            QoS.ZERO -> courierService.sendByteQosZero(
+                topic = topic,
+                message = message
+            )
+            QoS.ONE -> courierService.sendByteQosOne(
+                topic = topic,
+                message = message
+            )
+            QoS.TWO -> courierService.sendByteQosTwo(
+                topic = topic,
+                message = message
+            )
+        }
+    }
+
     fun listen(topic:String){
         Timber.tag("Courier-Log").d("coba listen $topic...")
         disposable.add(courierService.receive(topic).subscribe{
             uiThreadHandler.post{
-                receiveSink.success("{\"topic\" : \"$topic\", \"data\": $it}")
+                receiveSink.success("{\"topic\" : \"$topic\", \"data\": ${it.contentToString()}}")
             }
 
-            Timber.tag("Courier-Log").d("$it")
+            Timber.tag("Courier-Log").d("${it.contentToString()}")
         })
     }
 }
